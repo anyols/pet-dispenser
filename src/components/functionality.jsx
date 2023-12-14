@@ -66,8 +66,8 @@ const Functionality = () => {
   console.log("datarender", dataRender);
 
   return (
-    <div className="flex flex-col bg-[#cbd5e1] pt-20 inset-0 top-[120px]">
-      {[0, 1, 2, 3, 4, 5, 6, 7, 45, 31, 24, 12].map((_, idx) => (
+    <div className="flex flex-col bg-[#cbd5e1] h-screen pt-20 inset-0 top-[120px]">
+      {dataFeched.map((_, idx) => (
         <Dispenser
           key={idx}
           defaultData={dataRender}
