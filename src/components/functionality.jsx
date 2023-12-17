@@ -19,7 +19,7 @@ const formatDate = (date) => {
     .toString()
     .slice(-2)} ${hours}:${minutes}`;
 
-  console.log(formattedDate); // Output: "8/12/23 18:29"
+  // console.log(new Date());
   return formattedDate;
 };
 
@@ -37,16 +37,23 @@ const Functionality = () => {
           ...doc.data(),
         }));
         setDataFeched(data);
-        console.log(data);
+        // console.log(data);
+        // console.log("fetching data");
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
       }
     };
 
     fetchData();
+
+    // Refresh data every minute
+    const intervalId = setInterval(fetchData, 10000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, []); // Empty dependency array ensures the effect runs only once, similar to componentDidMount
 
-  console.log("Fetched data:", dataFeched);
+  // console.log("Fetched data:", dataFeched);
 
   // Check if dataFeched[0] and historic exist before accessing their properties
   const historic = dataFeched[0]?.historic;
@@ -55,22 +62,20 @@ const Functionality = () => {
     return <div>Loading...</div>;
   }
 
-  console.log(formatDate(historic[0]?.timestamp?.toDate()));
-
   const dataRender =
     historic?.map((h) => ({
       timestamp: formatDate(h?.timestamp?.toDate()),
-      value: h?.plate,
+      plate: h?.plate,
     })) || [];
-
-  console.log("datarender", dataRender);
 
   return (
     <div className="flex flex-col bg-[#cbd5e1] h-screen pt-20 inset-0 top-[120px]">
-      {dataFeched.map((_, idx) => (
+      {dataFeched.map((data, idx) => (
         <Dispenser
           key={idx}
+          docId={data.id}
           defaultData={dataRender}
+          // handleRefreshF={fetchData()}
           idx={dataFeched[0]?.name?.slice(-1)}
         />
       ))}
